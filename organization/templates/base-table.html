@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheet %}
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static "js/datatables.net-dt/css/jquery.dataTables.css" %}">
+{% endblock %}
+
+{% block content %}
+  {% block table %}
+
+    <table id="main-table" class="table table-hover thead-inverse">
+      <thead>
+        <tr>
+          {% block table_head %}
+          {% endblock %}
+        </tr>
+      </thead>
+      {% if todos %}
+        <tbody>
+            {% block table_body_all %}
+              {% for item in todos %}
+                <tr role="row">
+                  {% block table_body %}
+                  {% endblock %}
+                </tr>
+              {% endfor %}
+            {% endblock %}
+        </tbody>
+        <tfoot>
+        </tfoot>
+      </table>
+      {% else %}
+        No {{tcontext_objects_name}} yet
+      {% endif %}
+    </table>
+  {% endblock %}
+{% endblock %}
+
+{% block js_footer %}
+  <!-- data tables -->
+  <script src="{% static "js/datatables.net/js/jquery.dataTables.js" %}"></script>
+{% endblock %}

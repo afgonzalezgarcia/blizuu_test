@@ -1,0 +1,34 @@
+{% extends 'base-table.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item active">{{tcontext_objects_name}}</li>
+{% endblock %}
+
+{% block table_head %}
+  <th>Organization</th>
+  <th>Repositories</th>
+  <th>Last Syncronization</th>
+  <th>Options</th>
+{% endblock %}
+
+{% block table_body %}
+  <td>
+    <!-- link to repos -->
+    <a href="#">{{ item.name }}</a>
+    <small class="text-muted d-block">{{ item.description }}</small>
+  </td>
+  <td class="align-middle">
+    {{ item.repositories_json|length }}
+  </td>
+  <td class="align-middle">
+    {{ item.last_sync_at|default_if_none:"No synchronized yet" }}
+  </td>
+  <td class="align-middle">
+      <a href="{% url 'organization:update_organization' item.id %}" class="btn btn-success ml-2">Update</a>
+      {% if item.repositories.count %}
+        <a href="{% url 'organization:repositories' pk=item.id action='repositories' %}" class="btn btn-warning ml-2">Repositories</a>
+      {% endif %}
+      <a href="{% url 'organization:repositories' pk=item.id action='synchronize-repositories' %}" class="btn btn-primary ml-2">Synchronize</a>
+  </td>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{% if organization %} Update {{ organization }}{% else %}Create a New Organization{% endif %}{% endblock %}
+
+{% block stylesheet %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item"><a href="{% url 'home' %}">{{tcontext_objects_name}}</a></li>
+  <li class="breadcrumb-item active">
+    {% if organization %}{{ organization }}{% else %}New Organization{% endif %}
+  </li>
+{% endblock %}
+
+{% block content %}
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    {% include 'form.html' %}
+
+    <button type="submit" class="btn btn-success">{% if organization %}Update{% else %}Create{% endif %}</button>
+    <a href="{% url 'home' %}" class="btn btn-danger">Cancel</a>
+  </form>
+{% endblock %}
+
+{% block javascript %}
+  <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+  <script>
+    var simplemde = new SimpleMDE();
+  </script>
+{% endblock %}
