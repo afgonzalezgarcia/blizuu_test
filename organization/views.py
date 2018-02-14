@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render, render_to_response
-from django.views.generic import CreateView, ListView, RedirectView, TemplateView, UpdateView
-from django.utils.text import slugify
+from utils.utils import slug_generator
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import CreateView, ListView, UpdateView
 
 from .models import Organization, Repository
 from .forms import *
@@ -35,7 +35,7 @@ class OrganizationCreateView(CreateView):
 
     def form_valid(self, form):
         organization = form.save(commit=False)
-        organization.slug = slugify(organization.name)
+        organization.slug = slug_generator(organization.name, self.model)
         organization.save()
         self.synchronization_response = organization.synchronize_repositories()
 

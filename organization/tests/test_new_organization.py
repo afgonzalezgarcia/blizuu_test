@@ -29,7 +29,6 @@ class OrganizationCreateViewTest(TestCase):
     def test_new_organization_valid_post_data(self):
         data = {
             'name': "Githubtraining",
-            'slug': "githubtraining",
             'description': "Some Desc",
             'github_org_key_name': "githubtraining",
         }
@@ -44,7 +43,6 @@ class OrganizationCreateViewTest(TestCase):
     def test_new_organization_valid_post_data_invalid_github_org_key_name(self):
         data = {
             'name': "Continuum",
-            'slug': "continuum",
             'description': "Continuum",
             'github_org_key_name': "Continuum123",
         }
@@ -55,6 +53,27 @@ class OrganizationCreateViewTest(TestCase):
         self.assertEquals(Organization.objects.filter(slug="continuum").count(), 1)
         self.assertFalse(Repository.objects.filter(organization__slug="continuum").exists(), False)
         self.assertEquals(Repository.objects.filter(organization__slug="continuum").count(), 0)
+
+    def test_new_organization_same_name_create_different_slug(self):
+        organization1 = {
+            'name': "Organization",
+            'description': "Continuum",
+            'github_org_key_name': "organization1",
+        }
+
+        organization2 = {
+            'name': "Organization",
+            'description': "Continuum",
+            'github_org_key_name': "organization2",
+        }
+
+        self.client.post(self.new_url, organization1)
+        self.assertTrue(Organization.objects.filter(slug="organization").exists())
+        self.assertEquals(Organization.objects.filter(slug="organization").count(), 1)
+
+        self.client.post(self.new_url, organization2)
+        self.assertTrue(Organization.objects.filter(slug="organization-1").exists())
+        self.assertEquals(Organization.objects.filter(slug="organization-1").exists(), 1)
 
     def test_new_organization_invalid_post_data(self):
         post_response = self.client.post(self.new_url, {})
@@ -93,7 +112,6 @@ class OrganizationUpdateViewTest(TestCase):
     def test_update_organization_valid_post_data(self):
         data = {
             'name': "Githubtraining",
-            'slug': "githubtraining",
             'description': "Some Desc Updated",
             'github_org_key_name': "somedesc1234123412341",
         }
@@ -108,7 +126,6 @@ class OrganizationUpdateViewTest(TestCase):
     def test_new_organization_valid_post_data_update_github_org_key_name_sync_repos(self):
         data = {
             'name': "Githubtraining",
-            'slug': "githubtraining",
             'description': "Some Desc Updated",
             'github_org_key_name': "githubtraining",
         }

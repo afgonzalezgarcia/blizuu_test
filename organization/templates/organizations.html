@@ -15,7 +15,7 @@
 {% block table_body %}
   <td>
     <!-- link to repos -->
-    <a href="#">{{ item.name }}</a>
+    <a href="{% url 'organization:update_organization' item.id %}">{{ item.name }}</a>
     <small class="text-muted d-block">{{ item.description }}</small>
   </td>
   <td class="align-middle">
