@@ -3,7 +3,7 @@ from django.urls import resolve, reverse
 from django.conf import settings
 
 from ..models import Organization, Repository
-from ..views import RepositoriesViews
+from ..views import RepositoriesViews, RepositoriesSearchForm
 
 class RepositoriesViewTest(TestCase):
 
@@ -25,6 +25,10 @@ class RepositoriesViewTest(TestCase):
     def test_repositories_url_action_repositories_resolve_repositories_view(self):
         view = resolve(self.repositories_url)
         self.assertEquals(view.func.view_class, RepositoriesViews)
+
+    def test_contains_form(self):
+        form = self.response_repositories_url.context.get('repositories_search_form')
+        self.assertIsInstance(form, RepositoriesSearchForm)
 
     def test_items_is_empty_in_repositories_view_context(self):
         items = self.response_repositories_url.context.get('items')
