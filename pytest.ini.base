@@ -1,4 +1,4 @@
-# settings to pytest
+# settings to django-pytest
 # docs at: https://pytest-django.readthedocs.io
 
 # using also pytest-cov

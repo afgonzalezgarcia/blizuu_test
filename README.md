@@ -4,7 +4,7 @@ This readme will guide you to setup your project
 
 ### BLIZUU TEST ###
 
-This App to lists repositories for public organizations at Github using the Github API "V3"
+This App lists repositories for public organizations at Github using the Github API "V3"
 
 This project was made as code challenge to Blizuu by A. González
 
@@ -27,14 +27,18 @@ This project was made as code challenge to Blizuu by A. González
 
     * GITHUB_CLIENT_SECRET=YOUR_APP_CLIENT_SECRET
 
+    Documentation about:
+    python-decouple: https://pypi.python.org/pypi/python-decouple
+    dj-database-url: https://github.com/kennethreitz/dj-database-url
+
 3. Run migrations
 
-* 3.1 `python manage.py makemigrations`
-* 3.2 `python manage.py migrate`
+    * 3.1 `python manage.py makemigrations`
+    * 3.2 `python manage.py migrate`
 
-4. Create superuser
-`python manage.py createsuperuser`
+4. Create Superuser
 
+    `python manage.py createsuperuser`
 
 ### Contribution guidelines ###
 
@@ -49,16 +53,19 @@ This project was made as code challenge to Blizuu by A. González
 
 3. Run your tests
 
-   You can run your test simply using pytest
+    You can run your test simply using pytest
 
-   `pytest`
+    `pytest`
 
-   If you want to run your test and generates a coverage reporte, you have to run as follow
+    If you want to run your test and generates a coverage reporte, you have to run as follow
 
-   `py.test --cov-report html:cov_html --cov=myapp/tests`
+    `py.test --cov-report html:cov_html --cov=myapp/tests`
 
-   The above example create a coverage report in HTML format located at the folder `cov_html` in your project root folder
+    The above example create a coverage report in HTML format located at the folder `cov_html` in your project root folder
 
+    Documentation about:
+    django-pytest: https://pytest-django.readthedocs.io
+    pytest-con: https://pytest-cov.readthedocs.io/en/latest/
 
 ### Who do I talk to? ###
 
