@@ -9,3 +9,15 @@ class OrganizationForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(),
         }
+
+class RepositoriesSearchForm(forms.Form):
+    order_by_choices = [
+        ("created_at", "Created At"),
+        ("updated_at", "Last Update"),
+    ]
+
+    name = forms.CharField(required=False, label="Name")
+    order_by = forms.ChoiceField(choices=order_by_choices, label="Order By")
+
+    def __init__(self, *args, **kwargs):
+        super(RepositoriesSearchForm, self).__init__(*args, **kwargs)

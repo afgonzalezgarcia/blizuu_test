@@ -44,6 +44,7 @@ class Organization(models.Model):
 
         if self.github_org_key_name:
             api_repos_url = "%s/orgs/%s/repos" % (settings.GITHUB_API_BASE_URL, self.github_org_key_name)
+
             response = requests.get(api_repos_url)
             if response.status_code == requests.codes.ok:
                 repositories = []
@@ -80,14 +81,29 @@ class Organization(models.Model):
 
         return proccess_info
 
-    @property
-    def get_repositories_json(self):
+    def get_repositories_json(self, *args, **kwargs):
         """
-        Returns all repositories except sored repos
+        Returns all repositories except stored repos
         """
+        as_repository_objects = kwargs.get("as_repository_objects", False)
+        filter_by_name = kwargs.get("filter_by_name", False)
+        order_by = kwargs.get("order_by", "created_at")
         stored_ids = self.repositories.all().values_list("github_id", flat=True)
-        repositories = [repository for repository in self.repositories_json if repository["id"] not in stored_ids]
-        return sorted(repositories, key=lambda repos: repos["id"], reverse=True)
+
+        if as_repository_objects:
+            item_creation_sentence = "Repository.get_repository_object_from_json(repository, self)"
+            order_by_sentence = "repo: repo.github_%s" % (order_by)
+        else:
+            item_creation_sentence = "repository"
+            order_by_sentence = "repo: repo['%s']" % (order_by)
+
+        if filter_by_name:
+            repositories = eval("[%s for repository in self.repositories_json if repository['id'] not in stored_ids and (filter_by_name in repository['name'])]" % item_creation_sentence)
+        else:
+            repositories = eval("[%s for repository in self.repositories_json if repository['id'] not in stored_ids]" % item_creation_sentence)
+
+        repositories = eval("sorted(repositories, key=lambda %s, reverse=True)" % order_by_sentence)
+        return repositories
 
 
 class Repository(models.Model):
@@ -120,7 +136,7 @@ class Repository(models.Model):
         return self.name
 
     @staticmethod
-    def update_or_create_from_json(json, organization):
+    def get_values_from_json(json, organization):
         values = {
             'organization': organization,
             'name': json.get("name", "Name"),
@@ -129,15 +145,34 @@ class Repository(models.Model):
             'description': json.get("description", "Some Description"),
             'api_url': json.get("url"),
             'html_url': json.get("html_url"),
-            'github_created_at': parse(json.get("created_at")),
-            'github_updated_at': parse(json.get("updated_at")),
-            'github_pushed_at': parse(json.get("pushed_at")),
+            'github_created_at': None,
+            'github_updated_at': None,
+            'github_pushed_at': None,
             'github_data': json,
         }
 
+        if json.get("created_at"):
+            values["github_created_at"] = parse(json.get("created_at"))
+
+        if json.get("updated_at"):
+            values["github_updated_at"] = parse(json.get("updated_at"))
+
+        if json.get("pushed_at"):
+            values["github_pushed_at"] = parse(json.get("pushed_at"))
+
+        return values
+
+    @staticmethod
+    def update_or_create_from_json(json, organization):
+        values = Repository.get_values_from_json(json, organization)
         obj, created = Repository.objects.update_or_create(
             github_id=json.get("id"), organization=organization,
             defaults=values,
         )
 
         return obj, created
+
+    @staticmethod
+    def get_repository_object_from_json(json, organization):
+        values = Repository.get_values_from_json(json, organization)
+        return Repository(**values)

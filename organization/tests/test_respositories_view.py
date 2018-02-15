@@ -26,14 +26,14 @@ class RepositoriesViewTest(TestCase):
         view = resolve(self.repositories_url)
         self.assertEquals(view.func.view_class, RepositoriesViews)
 
-    def test_todos_is_empty_in_repositories_view_context(self):
-        todos = self.response_repositories_url.context.get('todos')
-        # self.assertIsInstance(todos, QuerySet)
-        self.assertEquals(todos.count(), 0)
+    def test_items_is_empty_in_repositories_view_context(self):
+        items = self.response_repositories_url.context.get('items')
+        # self.assertIsInstance(items, QuerySet)
+        self.assertEquals(len(items), 0)
 
     def test_repositories_view_synchronize_repositories_action_status_code(self):
         self.response_synchronize_url = self.client.get(self.synchronize_url)
-        self.assertEquals(self.response_synchronize_url.status_code, 200)
+        self.assertEquals(self.response_synchronize_url.status_code, 302)
 
     def test_repositories_url_action_synchronize_repositories_repositories_view(self):
         view = resolve(self.synchronize_url)

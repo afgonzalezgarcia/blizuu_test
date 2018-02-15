@@ -1,77 +1,79 @@
 {% extends 'base-table.html' %}
-{% load static %}
 {% load organization_extras %}
+{% load static %}
+{% load widget_tweaks %}
 
 {% block breadcrumb %}
   <li class="breadcrumb-item"><a href="{% url 'organization:organizations' %}">Organizations</a></li>
   <li class="breadcrumb-item active">{{tcontext_objects_name}} for {{ organization }}</li>
 {% endblock %}
 
+{% block content_header %}
+  {% if repositories_search_form %}
+    <div>
+      <form id="repositories-search-form" method="GET" action="{% url 'organization:repositories' pk=organization.id action='repositories' %}">
+        <table id="" class="table table-hover thead-inverse">
+            <thead>
+              <tr>
+                <th>
+                  Search by {{ repositories_search_form.name.label }}
+                </th>
+                <th>
+                  {{ repositories_search_form.order_by.label }}
+                </th>
+                <th>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr role="row">
+                <td>
+                  {% render_field repositories_search_form.name class="form-control" %}
+                </td>
+                <td>
+                  {% render_field repositories_search_form.order_by class="form-control" %}
+                </td>
+                <td>
+                  <button type="submit" class="btn btn-success">Search</button>
+                </td>
+              </tr>
+            </tbody>
+        </table>
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}
+
 {% block table_head %}
   <th>Name</th>
   <th>Github ID</th>
   <th>Created at</th>
-  <th>Last Updated</th>
-  <th>Options</th>
+  <th>Last Update</th>
+  <th>Most recent</th>
 {% endblock %}
 
 
-{% block table_body_all %}
-  {% for item in todos %}
-    <tr role="row">
-      <td>
-        <a href="{{item.html_url}}">{{ item.name }}</a>
-        <small class="text-muted d-block">{{ item.description|default_if_none:""|truncatechars:25 }}</small>
-      </td>
-      <td>
-        <a href="{{item.html_url}}">{{ item.github_id }}</a>
-      </td>
-      <td class="align-middle">
-        {{ item.github_created_at|default_if_none:"" }}
-      </td>
-      <td class="align-middle">
-        {{ item.github_updated_at|default_if_none:"" }}
-      </td>
-      <td class="align-middle">
-      </td>
-    </tr>
-  {% endfor %}
-
-  {% if organization.get_repositories_json %}
-    {% for item in organization.get_repositories_json %}
-      <tr role="row">
-        <td>
-          <a href="{{item.html_url}}">{{ item.name }}</a>
-          <small class="text-muted d-block">{{ item.description|default_if_none:""|truncatechars:25 }}</small>
-        </td>
-        <td>
-          <a href="{{item.html_url}}">{{ item.id }}</a>
-        </td>
-        <td class="align-middle">
-          {% parse_date item.created_at  as created_at %}
-          {{ created_at }}
-        </td>
-        <td class="align-middle">
-          {% parse_date item.updated_at as updated_at %}
-          {{ updated_at }}
-        </td>
-        <td class="align-middle">
-        </td>
-      </tr>
-    {% endfor %}
-  {% endif %}
-{% endblock %}
-
-{% block javascript %}
-  <script type="text/javascript">
-    $('#main-table').DataTable({
-      'paging'      : true,
-      'lengthChange': true,
-      'searching'   : true,
-      'ordering'    : true,
-      'info'        : true,
-      'autoWidth'   : false,
-      'order': [[1, "desc"]],
-    })
-  </script>
+{% block table_body %}
+  <tr role="row">
+    <td>
+      <a href="{{item.html_url}}">{{ item.name }}</a>
+      <small class="text-muted d-block">{{ item.description|default_if_none:""|truncatechars:25 }}</small>
+    </td>
+    <td>
+      <a href="{{item.html_url}}">{{ item.github_id }}</a>
+    </td>
+    <td class="align-middle">
+      {{ item.github_created_at|default_if_none:"" }}
+    </td>
+    <td class="align-middle">
+      {{ item.github_updated_at|default_if_none:"" }}
+    </td>
+    <td class="align-middle">
+      {% if item.id %}
+        <span class="fa fa-check" aria-hidden="true"></span>
+      {% else %}
+        <span class="fa fa-close" aria-hidden="true"></span>
+      {% endif %}
+    </td>
+  </tr>
 {% endblock %}
