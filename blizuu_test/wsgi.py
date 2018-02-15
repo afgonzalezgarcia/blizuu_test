@@ -12,7 +12,7 @@ import os
 from decouple import config
 from django.core.wsgi import get_wsgi_application
 
-SETTINGS_MODULE_PATH = config('SETTINGS_MODULE_PATH')
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", SETTINGS_MODULE_PATH)
+DJANGO_SETTINGS_MODULE = config('DJANGO_SETTINGS_MODULE')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", DJANGO_SETTINGS_MODULE)
 
 application = get_wsgi_application()

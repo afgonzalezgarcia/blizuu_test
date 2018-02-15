@@ -1,0 +1,10 @@
+# settings to pytest
+# docs at: https://pytest-django.readthedocs.io
+
+# using also pytest-cov
+# docs at: https://pytest-cov.readthedocs.io/en/latest/
+
+[pytest]
+DJANGO_SETTINGS_MODULE = YOUR_SETTINGS_MODULE
+addopts = --reuse-db
+python_files = tests.py test_*.py *_tests.py

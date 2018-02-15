@@ -103,3 +103,11 @@ ENV/
 
 # migrations
 */migrations
+
+# coverage
+cov_html/
+
+# pytest
+.pytest_cache/
+pytest.ini
+

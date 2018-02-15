@@ -91,11 +91,13 @@ WSGI_APPLICATION = 'blizuu_test.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-database = dj_database_url.config(default=config('DATABASE_URL'))
-database.update({'TEST': {'NAME': config('TEST_DATABASE_NAME')}})
+default_database = dj_database_url.config(default=config('DATABASE_URL'))
+test_database_name = config('TEST_DATABASE_NAME', default=False)
+if test_database_name:
+    default_database.update({'TEST': {'NAME': config('TEST_DATABASE_NAME')}})
 
 DATABASES = {
-    'default': database,
+    'default': default_database,
 }
 
 
