@@ -28,5 +28,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     # apps urls
-    url(r'^organization/', include('organization.urls', namespace='organization')),
+    url(r'^organizations/', include('organization.urls', namespace='organization')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -108,20 +108,34 @@ class RepositoriesViews(ListView):
         return super(RepositoriesViews, self).get_context_data(**kwargs)
 
     def get_paginator(self, queryset, per_page, orphans=0, allow_empty_first_page=True, **kwargs):
-        order_by = "created_at"
+        order_by = "github_created_at"
         filters = {}
 
         if self.repositories_search_form.is_bound:
-            if self.repositories_search_form.data.get("order_by", False):
-                order_by = self.repositories_search_form.data.get("order_by")
+            param_order_by = self.repositories_search_form.data.get("order_by", False)
+            if param_order_by and param_order_by in self.repositories_search_form.get_valid_order_by_choices():
+                order_by = param_order_by
 
             name = self.repositories_search_form.data.get("name", False)
             if name:
                 filters.update({'name__contains': name})
 
-        queryset = self.get_queryset().filter(**filters).order_by("github_%s" % order_by)
-        repositories_json_objects = self.organization.get_repositories_json(as_repository_objects=True, order_by=order_by, filter_by_name=name)
+        # getting sroted repos
+        queryset = self.get_queryset().filter(**filters)
+        # getting cached respons in repositories_json_field in organization instance
+        repositories_json_objects = self.organization.get_repositories_json(as_repository_objects=True, filter_by_name=name)
+
         paginator_queryset = [repository for repository in queryset] + [repository for repository in repositories_json_objects]
+
+        # ordering criteria
+        if order_by.startswith("-"):
+            order_by_reverse = "True"
+            order_by = order_by.replace("-", "")
+        else:
+            order_by_reverse = "False"
+
+        paginator_queryset = eval("sorted(paginator_queryset, key=lambda repo: repo.%s, reverse=%s)" % (order_by, order_by_reverse))
+
         return super(RepositoriesViews, self).get_paginator(paginator_queryset, self.paginate_by, **kwargs)
 
     def get_queryset(self):

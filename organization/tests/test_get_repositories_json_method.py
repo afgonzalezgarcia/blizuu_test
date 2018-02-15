@@ -41,12 +41,22 @@ class GetRepositoriesJsonMethodTest(TestCase):
         org = Organization.objects.get(slug="githubtraining")
         self.assertEquals(len(org.get_repositories_json(as_repository_objects=True, filter_by_name="example")), 17)
 
-    def test_returns_filter_by_name_and_order_by_created_at(self):
+    def test_returns_filter_by_name_and_order_by_github_created_at_desc(self):
         org = Organization.objects.get(slug="githubtraining")
-        repo = org.get_repositories_json(as_repository_objects=True, filter_by_name="example", order_by="created_at")[0]
+        repo = org.get_repositories_json(as_repository_objects=True, filter_by_name="example", order_by="-github_created_at")[0]
         self.assertEquals(repo.github_id, 33316062)
 
-    def test_returns_filter_by_name_and_order_by_updated_at(self):
+    def test_returns_filter_by_name_and_order_by_github_updated_at_desc(self):
         org = Organization.objects.get(slug="githubtraining")
-        repo = org.get_repositories_json(as_repository_objects=True, filter_by_name="example", order_by="updated_at")[0]
+        repo = org.get_repositories_json(as_repository_objects=True, filter_by_name="example", order_by="-github_updated_at")[0]
         self.assertEquals(repo.github_id, 11904120)
+
+    def test_returns_order_by_github_created_at_asc(self):
+        org = Organization.objects.get(slug="githubtraining")
+        repo = org.get_repositories_json(as_repository_objects=True, order_by="github_created_at")[0]
+        self.assertEquals(repo.github_id, 9104334)
+
+    def test_returns_order_by_github_updated_at_asc(self):
+        org = Organization.objects.get(slug="githubtraining")
+        repo = org.get_repositories_json(as_repository_objects=True, order_by="github_updated_at")[0]
+        self.assertEquals(repo.github_id, 11904134)

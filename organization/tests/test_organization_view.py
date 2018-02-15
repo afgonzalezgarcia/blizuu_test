@@ -30,9 +30,9 @@ class OrganizationViewTests(TestCase):
         self.assertEquals(view.func.view_class, OrganizationsViews)
 
     def test_organizations_url_resolves_organizations_view(self):
-        view = resolve('/organization/')
+        view = resolve('/organizations/')
         self.assertEquals(view.func.view_class, OrganizationsViews)
 
     def test_organizations_all_url_resolves_organizations_view(self):
-        view = resolve('/organization/all/')
+        view = resolve('/organizations/all/')
         self.assertEquals(view.func.view_class, OrganizationsViews)

@@ -16,7 +16,7 @@ class OrganizationCreateViewTest(TestCase):
         self.assertEquals(self.response_new_url.status_code, 200)
 
     def test_new_url_resolves_organization_create_view(self):
-        view = resolve("/organization/new/")
+        view = resolve("/organizations/new/")
         self.assertEquals(view.func.view_class, OrganizationCreateView)
 
     def test_csrf(self):
@@ -99,7 +99,7 @@ class OrganizationUpdateViewTest(TestCase):
         self.assertEquals(self.response_update_url.status_code, 200)
 
     def test_update_url_resolves_organization_update_view(self):
-        view = resolve("/organization/1/update/")
+        view = resolve("/organizations/1/update/")
         self.assertEquals(view.func.view_class, OrganizationUpdateView)
 
     def test_csrf(self):

@@ -170,4 +170,9 @@ SITE_ID = config('SITE_ID', cast=int)
 GITHUB_API_BASE_URL = "https://api.github.com"
 
 # about our app
+
 MAX_REPOSITORIES_IN_BD = 10
+
+# GITHUB APP KEYS TO INCREASE API RATES
+GITHUB_CLIENT_ID = config('GITHUB_CLIENT_ID', default=False)
+GITHUB_CLIENT_SECRET = config('GITHUB_CLIENT_SECRET', default=False)

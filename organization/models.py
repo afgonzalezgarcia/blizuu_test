@@ -45,6 +45,9 @@ class Organization(models.Model):
         if self.github_org_key_name:
             api_repos_url = "%s/orgs/%s/repos" % (settings.GITHUB_API_BASE_URL, self.github_org_key_name)
 
+            if (hasattr(settings, 'GITHUB_CLIENT_ID') and settings.GITHUB_CLIENT_ID) and (hasattr(settings, 'GITHUB_CLIENT_SECRET') and settings.GITHUB_CLIENT_SECRET):
+                api_repos_url = "%s?client_id=%s&client_secret=%s" % (api_repos_url, settings.GITHUB_CLIENT_ID, settings.GITHUB_CLIENT_SECRET)
+
             response = requests.get(api_repos_url)
             if response.status_code == requests.codes.ok:
                 repositories = []
@@ -85,16 +88,28 @@ class Organization(models.Model):
         """
         Returns all repositories except stored repos
         """
+        stored_ids = self.repositories.all().values_list("github_id", flat=True)
         as_repository_objects = kwargs.get("as_repository_objects", False)
         filter_by_name = kwargs.get("filter_by_name", False)
-        order_by = kwargs.get("order_by", "created_at")
-        stored_ids = self.repositories.all().values_list("github_id", flat=True)
+        order_by = kwargs.get("order_by", False)
+
+        if order_by:
+            if order_by.startswith("-"):
+                order_by_reverse = "True"
+                order_by = order_by.replace("-", "")
+            else:
+                order_by_reverse = "False"
 
         if as_repository_objects:
             item_creation_sentence = "Repository.get_repository_object_from_json(repository, self)"
-            order_by_sentence = "repo: repo.github_%s" % (order_by)
+            order_by_sentence = "repo: repo.%s" % (order_by)
         else:
             item_creation_sentence = "repository"
+
+            # because originaries fields from github called created_at non github_created_at
+            if order_by and order_by.startswith("github_"):
+                order_by = order_by.replace("github_", "")
+
             order_by_sentence = "repo: repo['%s']" % (order_by)
 
         if filter_by_name:
@@ -102,7 +117,9 @@ class Organization(models.Model):
         else:
             repositories = eval("[%s for repository in self.repositories_json if repository['id'] not in stored_ids]" % item_creation_sentence)
 
-        repositories = eval("sorted(repositories, key=lambda %s, reverse=True)" % order_by_sentence)
+        if order_by:
+            repositories = eval("sorted(repositories, key=lambda %s, reverse=%s)" % (order_by_sentence, order_by_reverse))
+
         return repositories
 
 
