@@ -19,11 +19,11 @@ This project was made as code challenge to Blizuu by A. González
 
     OPTIONAL:
         
-        At this point is very important to notice you that if you want to increase your GITHUB Api Rates, you may create an test app in to you github account, accesssing to Settings ->Developer settings -> OAuth Apps and once you've created your app, add your app CLIEND_ID and app CLIENT_SECRET in your .env file as follow:
+    At this point is very important to notice you that if you want to increase your GITHUB Api Rates, you may create an test app in to you github account, accesssing to Settings ->Developer settings -> OAuth Apps and once you've created your app, add your app CLIEND_ID and app CLIENT_SECRET at the end of your .env file as follow:
         
-        GITHUB_CLIENT_ID=YOUR_APP_CLIEND_ID
+    * GITHUB_CLIENT_ID=YOUR_APP_CLIENT_ID
 
-        GITHUB_CLIENT_SECRET=YOUR_APP_CLIEND_SECRET
+    * GITHUB_CLIENT_SECRET=YOUR_APP_CLIENT_SECRET
 
 3. Run migrations
 
