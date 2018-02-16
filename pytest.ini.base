@@ -1,5 +1,6 @@
 # settings to django-pytest
 # docs at: https://pytest-django.readthedocs.io
+# Pytest is configured with option --reuse-db, when you alter your database schema, run `pytest --create-db`, to force re-creation of the test database
 
 # using also pytest-cov
 # docs at: https://pytest-cov.readthedocs.io/en/latest/
